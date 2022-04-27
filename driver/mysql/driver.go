@@ -24,7 +24,7 @@ func (d Driver) New(config driver.Config) (driver.Conn, error) {
 	baseUrl := fmt.Sprintf("%s:%s@%s(%s:%d)/%s", config.User, config.Password, config.Protocol, config.Host, config.Port, config.Database)
 	if config.MySQLCert != "" {
 		rootCertPool := x509.NewCertPool()
-		pem, err := ioutil.ReadFile("/path/ca-cert.pem")
+		pem, err := ioutil.ReadFile(config.MySQLCert)
 		if err != nil {
 			log.Fatal(err)
 		}
