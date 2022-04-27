@@ -1,8 +1,13 @@
 package mysql
 
 import (
+	"crypto/tls"
+	"crypto/x509"
 	"database/sql"
 	"fmt"
+	"github.com/go-sql-driver/mysql"
+	"io/ioutil"
+	"log"
 
 	"github.com/elwinar/rambler/driver"
 	_ "github.com/go-sql-driver/mysql" // Where are working with the go-sql-driver/mysql driver for database/sql.
@@ -16,7 +21,25 @@ func init() {
 type Driver struct{}
 
 func (d Driver) New(config driver.Config) (driver.Conn, error) {
-	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@%s(%s:%d)/%s", config.User, config.Password, config.Protocol, config.Host, config.Port, config.Database))
+	baseUrl := fmt.Sprintf("%s:%s@%s(%s:%d)/%s", config.User, config.Password, config.Protocol, config.Host, config.Port, config.Database)
+	if config.MySQLCert != "" {
+		rootCertPool := x509.NewCertPool()
+		pem, err := ioutil.ReadFile("/path/ca-cert.pem")
+		if err != nil {
+			log.Fatal(err)
+		}
+		if ok := rootCertPool.AppendCertsFromPEM(pem); !ok {
+			log.Fatal("Failed to append PEM.")
+		}
+		if err := mysql.RegisterTLSConfig("custom", &tls.Config{
+			RootCAs: rootCertPool,
+		}); err != nil {
+			return nil, err
+		}
+
+		baseUrl = fmt.Sprintf("%s?tls=custom", baseUrl)
+	}
+	db, err := sql.Open("mysql", baseUrl)
 	if err != nil {
 		return nil, err
 	}

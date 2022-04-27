@@ -36,16 +36,17 @@ func Get(driver string) (Driver, error) {
 }
 
 type Config struct {
-	Protocol string `json:"protocol"`
-	Host     string `json:"host"`
-	Port     uint64 `json:"port"`
-	User     string `json:"user"`
-	Role     string `json:"role"` // For PostgreSQL
-	Password string `json:"password"`
-	Database string `json:"database"`
-	Schema   string `json:"schema"` // For PostgreSQL
-	Table    string `json:"table"`
-	SSLMode  string `json:"sslmode"` // For PostgreSQL
+	Protocol  string `json:"protocol"`
+	Host      string `json:"host"`
+	Port      uint64 `json:"port"`
+	User      string `json:"user"`
+	Role      string `json:"role"` // For PostgreSQL
+	Password  string `json:"password"`
+	Database  string `json:"database"`
+	Schema    string `json:"schema"` // For PostgreSQL
+	Table     string `json:"table"`
+	SSLMode   string `json:"sslmode"`   // For PostgreSQL
+	MySQLCert string `json:"mysqlcert"` // For MySQL
 }
 
 // Conn is the interface used by the program to manipulate the database.
