@@ -22,3 +22,9 @@ release: ## Build the release files
 .PHONY: test
 test: ## Test the project
 	go test ./...
+.PHONY: cross-build
+cross-build: ## Build for Windows 64-bit, Linux 64-bit, macOS AMD64, and macOS ARM64
+	GOOS=windows GOARCH=amd64 go build -o release/rambler-windows-amd64.exe -ldflags=${ldflags} ${pkg}
+	GOOS=linux GOARCH=amd64 go build -o release/rambler-linux-amd64 -ldflags=${ldflags} ${pkg}
+	GOOS=darwin GOARCH=amd64 go build -o release/rambler-darwin-amd64 -ldflags=${ldflags} ${pkg}
+	GOOS=darwin GOARCH=arm64 go build -o release/rambler-darwin-arm64 -ldflags=${ldflags} ${pkg}
